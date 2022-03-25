@@ -1,0 +1,7 @@
+host = ec2-18-215-96-22.compute-1.amazonaws.com
+database = d96asn15oirh76
+user = guoakllcseoxhk
+port = 5432
+password = c668ba40006b4d6122f65751cf2b3df659f02b284534809fa11af022a58109a2
+uri = postgresql://guoakllcseoxhk:c668ba40006b4d6122f65751cf2b3df659f02b284534809fa11af022a58109a2@ec2-18-215-96-22.compute-1.amazonaws.com:5432/d96asn15oirh76
+heroku cli = heroku pg:psql postgresql-vertical-35711 --app aliza-proyect1
