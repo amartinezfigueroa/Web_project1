@@ -25,12 +25,10 @@ db = scoped_session(sessionmaker(bind=engine))
 
 
 
-@app.route("/iniciosecion", METHODS=["POST","GET"])
-def iniciosecion():
+@app.route("/")
+def index():
+    return render_template("layout.html")
 
-    if request.methods == "POST": 
-        name = request.form.get("nombre")
-        password = request.form.get("contraseña")
-    
-    else: 
-        return render_template("iniciosecion.html")
+@app.route("/iniciosecion")
+def inisiosecion():
+    return render_template("iniciosecion.html")
