@@ -4,6 +4,10 @@ from flask import Flask, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from dotenv import load_dotenv
+from helper import login_required
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -23,12 +27,15 @@ db = scoped_session(sessionmaker(bind=engine))
 
 #usuarios
 
-
-
 @app.route("/")
+@login_required
 def index():
     return render_template("layout.html")
 
-@app.route("/iniciosecion")
+@app.route("/iniciosecion" ,methods=["POST" , "GET"])
 def inisiosecion():
+    if request.method == "POST":
+        usuarios = request.form.get("nombre")
+        print(usuarios)
+        return render_template("layout.html")
     return render_template("iniciosecion.html")

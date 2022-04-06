@@ -7,15 +7,15 @@
 {% block body %}
 
 <body>
-    <form class="login-form">
+    <form class="login-form" method="post" action="/iniciosecion">
         <p class="login-text">
             <span class="fa-stack fa-lg">
             <i class="fa fa-circle fa-stack-2x"></i>
             <i class="fa fa-lock fa-stack-1x"></i>
           </span>
         </p>
-        <input type="User" class="login-username" autofocus="true" required="true" placeholder="User" />
-        <input type="password" class="login-password" required="true" placeholder="Password" />
+        <input type="User" class="login-username" name = "nombre" autofocus="true" required="true" placeholder="User" />
+        <input type="password" class="login-password" name = "contraseña" required="true" placeholder="Password" />
         <input type="submit" name="Login" value="Login" class="login-submit" />
     </form>
     <a href="#" class="login-forgot-pass">forgot password?</a>
