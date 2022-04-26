@@ -1,11 +1,12 @@
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask,flash, session, render_template, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
 from helper import login_required
+
 
 load_dotenv()
 
@@ -37,5 +38,34 @@ def inisiosecion():
     if request.method == "POST":
         usuarios = request.form.get("nombre")
         print(usuarios)
-        return render_template("layout.html")
-    return render_template("iniciosecion.html")
+        
+        password = request.form.get("contraseña")
+        print(password)
+        return 'ok'
+    else:
+        return render_template("iniciosecion.html")
+
+
+@app.route("/registro", methods = ["POST", "GET"])
+def registro():
+    if request.method == "POST":
+        rusuario = request.form.get("rusername")
+        print(rusuario)
+
+        rcontraseña = request.form.get("rpassword")
+        print(rcontraseña)
+
+        rconfirmacion = request.form.get("rconfirmation")
+        print(rconfirmacion)
+
+        if rcontraseña != rconfirmacion:
+            flash("contraseña incorrecta")
+            return render_template("registro.html") 
+
+        db.execute('Insert into usuarios (usuario , contraseña) values(:rusuario, :rcontraseña)', {'rusuario': rusuario, 'rcontraseña': rcontraseña})
+        db.commit()
+        return "bien"
+    else:
+        return render_template("registro.html")
+      
+  
