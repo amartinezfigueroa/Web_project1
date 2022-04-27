@@ -53,11 +53,6 @@ def inisiosecion():
 
         consult = db.execute("SELECT nombre, contraseña FROM usuarios WHERE nombre = usuarios").fetchone()
 
-       # if consult == 0 :
-        #    flash("El usuario no existe")
-        #else:
-         #   return render_template("layout.html")
-
         session["user_id"] = consult[0]
         return render_template("layout.html")
 
@@ -84,6 +79,12 @@ def registro():
         db.execute('Insert into usuarios (usuario , contraseña) values(:rusuario, :rcontraseña)', {'rusuario': rusuario, 'rcontraseña': rcontraseña})
         db.commit()
         return render_template("layout.html")
+
+        if consult == 0 :
+            flash("El usuario no existe")
+        else:
+           return render_template("layout.html")
+           
     else:
         return render_template("registro.html")
       
