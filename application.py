@@ -22,7 +22,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Set up database
-engine = create_engine(os.getenv("DATABASE_URL"))
+engine = create_engine("postgresql://guoakllcseoxhk:c668ba40006b4d6122f65751cf2b3df659f02b284534809fa11af022a58109a2@ec2-18-215-96-22.compute-1.amazonaws.com:5432/d96asn15oirh76")
 db = scoped_session(sessionmaker(bind=engine))
 
 
@@ -36,12 +36,31 @@ def index():
 @app.route("/iniciosecion" ,methods=["POST" , "GET"])
 def inisiosecion():
     if request.method == "POST":
+
+        if not request.form.get("nombre"):
+            flash("Llenar todos los campos")
+            return render_template("iniciosecion.html")
+
         usuarios = request.form.get("nombre")
         print(usuarios)
         
+        if not request.form.get("contraseña"):
+            flash("Llenar todos los campos")
+            return render_template("iniciosecion.html")
+
         password = request.form.get("contraseña")
         print(password)
-        return 'ok'
+
+        consult = db.execute("SELECT nombre, contraseña FROM usuarios WHERE nombre = usuarios").fetchone()
+
+       # if consult == 0 :
+        #    flash("El usuario no existe")
+        #else:
+         #   return render_template("layout.html")
+
+        session["user_id"] = consult[0]
+        return render_template("layout.html")
+
     else:
         return render_template("iniciosecion.html")
 
@@ -59,13 +78,20 @@ def registro():
         print(rconfirmacion)
 
         if rcontraseña != rconfirmacion:
-            flash("contraseña incorrecta")
+            flash("la contraseña no coincide")
             return render_template("registro.html") 
 
         db.execute('Insert into usuarios (usuario , contraseña) values(:rusuario, :rcontraseña)', {'rusuario': rusuario, 'rcontraseña': rcontraseña})
         db.commit()
-        return "bien"
+        return render_template("layout.html")
     else:
         return render_template("registro.html")
       
-  
+
+@app.route("/layout", methods = ["POST", "GET"])
+def busqueda():
+     if request.method == "POST":
+        buscar = request.form.get("busqueda")
+        print(busqueda)
+
+        return "no se"
