@@ -1,4 +1,5 @@
 import os
+from django.shortcuts import redirect
 
 from flask import Flask,flash, session, render_template, request
 from flask_session import Session
@@ -35,8 +36,9 @@ def index():
 
 @app.route("/iniciosecion" ,methods=["POST" , "GET"])
 def inisiosecion():
+    session.clear()
     if request.method == "POST":
-
+        
         if not request.form.get("nombre"):
             flash("Llenar todos los campos")
             return render_template("iniciosecion.html")
@@ -52,17 +54,17 @@ def inisiosecion():
         #print(password)
 
         consult = db.execute("SELECT * FROM usuarios WHERE usuario = :us and contraseña = :contra", {"us": usuarios, "contra": password}).fetchone()
+        
+        if len(consult) == 0:
+            flash("El usuario no existe")
+            return render_template("iniciosecion.html")
 
+        
         print(consult[0])
 
-      
-
         session["id_user"] = consult[0]
-        
-
-       
-
-        return render_template("layout.html")
+        return render_template("libros.html")
+     
 
     else:
         return render_template("iniciosecion.html")
@@ -87,17 +89,13 @@ def registro():
         usuario = db.execute('select usuario from usuarios where usuario = :usuario', {'usuario': rusuario}).rowcount
         print(usuario)
 
-        
-        
-        #if consult == 0 :
-            #flash("El usuario no existe")
-        #else:
-           #return render_template("layout.html")
+        #register["id_user"] = usuario[0]
+
 
         if usuario == 0:
             db.execute('Insert into usuarios (usuario , contraseña) values(:rusuario, :rcontraseña)', {'rusuario': rusuario, 'rcontraseña': rcontraseña})
             db.commit()
-            return "iniciaste sesion" # HACER INDEX Y RETURNAR RENDER
+            return render_template("index.html")
         else:
             flash("El usuario ya existe")
             return render_template("registro.html")
@@ -109,10 +107,25 @@ def registro():
         return render_template("registro.html")
       
 
-@app.route("/layout", methods = ["POST", "GET"])
-def busqueda():
-     if request.method == "POST":
+@app.route("/libros", methods = ["POST", "GET"])
+def libros():
+    if request.method == "POST":
         buscar = request.form.get("busqueda")
-        #print(busqueda)
+        print(buscar)
 
-        return "no se"
+        return render_template("libros.html")
+
+    else:
+        return render_template("libros.html")
+    
+#buscar los campos en la base de datos y asociarlos a la variable buscar
+#hacer consulta select de todos los campos
+#retornar libros, variable = variable
+#ciclo for variable
+
+@app.route("/Cerrarsecion")
+def cerrar():
+
+    session.clear()
+
+    return render_template ("index.html")

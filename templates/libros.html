@@ -7,7 +7,12 @@
 {% block body %}
 <body>
     <form method="post" action="/libros">
+
         <input type="submit" name="enviar" value="enviar" placeholder="Enviar" />
+    </form>
+
+    <form  action="/cerrarsesion">
+        <button type="button" class="btn btn-primary">Cerrar sesion</button>
     </form>
 
 </body>
