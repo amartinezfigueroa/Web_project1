@@ -42,18 +42,26 @@ def inisiosecion():
             return render_template("iniciosecion.html")
 
         usuarios = request.form.get("nombre")
-        print(usuarios)
+        #print(usuarios)
         
         if not request.form.get("contraseña"):
             flash("Llenar todos los campos")
             return render_template("iniciosecion.html")
 
         password = request.form.get("contraseña")
-        print(password)
+        #print(password)
 
-        consult = db.execute("SELECT nombre, contraseña FROM usuarios WHERE nombre = usuarios").fetchone()
+        consult = db.execute("SELECT * FROM usuarios WHERE usuario = :us and contraseña = :contra", {"us": usuarios, "contra": password}).fetchone()
 
-        session["user_id"] = consult[0]
+        print(consult[0])
+
+      
+
+        session["id_user"] = consult[0]
+        
+
+       
+
         return render_template("layout.html")
 
     else:
@@ -75,15 +83,27 @@ def registro():
         if rcontraseña != rconfirmacion:
             flash("la contraseña no coincide")
             return render_template("registro.html") 
+        
+        usuario = db.execute('select usuario from usuarios where usuario = :usuario', {'usuario': rusuario}).rowcount
+        print(usuario)
 
-        db.execute('Insert into usuarios (usuario , contraseña) values(:rusuario, :rcontraseña)', {'rusuario': rusuario, 'rcontraseña': rcontraseña})
-        db.commit()
-        return render_template("layout.html")
+        
+        
+        #if consult == 0 :
+            #flash("El usuario no existe")
+        #else:
+           #return render_template("layout.html")
 
-        if consult == 0 :
-            flash("El usuario no existe")
+        if usuario == 0:
+            db.execute('Insert into usuarios (usuario , contraseña) values(:rusuario, :rcontraseña)', {'rusuario': rusuario, 'rcontraseña': rcontraseña})
+            db.commit()
+            return "iniciaste sesion" # HACER INDEX Y RETURNAR RENDER
         else:
-           return render_template("layout.html")
+            flash("El usuario ya existe")
+            return render_template("registro.html")
+
+        
+        return render_template("layout.html")
            
     else:
         return render_template("registro.html")
@@ -93,6 +113,6 @@ def registro():
 def busqueda():
      if request.method == "POST":
         buscar = request.form.get("busqueda")
-        print(busqueda)
+        #print(busqueda)
 
         return "no se"
