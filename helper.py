@@ -9,7 +9,7 @@ def login_required(f):
 	"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get("id") is None:
+        if session.get("id_user") is None:
             return redirect("/iniciosecion")
         return f(*args, **kwargs)
     return decorated_function

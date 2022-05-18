@@ -1,7 +1,7 @@
 import os
 from django.shortcuts import redirect
 
-from flask import Flask,flash, session, render_template, request
+from flask import Flask,flash, session, render_template,redirect, request
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -32,7 +32,7 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 @login_required
 def index():
-    return render_template("layout.html")
+    return render_template("index.html")
 
 @app.route("/iniciosecion" ,methods=["POST" , "GET"])
 def inisiosecion():
@@ -63,7 +63,7 @@ def inisiosecion():
         print(consult[0])
 
         session["id_user"] = consult[0]
-        return render_template("libros.html")
+        return redirect("/")
      
 
     else:
@@ -107,17 +107,29 @@ def registro():
         return render_template("registro.html")
       
 
+@app.route("/busqueda", methods = ["POST", "GET"])
+def busqueda():
+
+    if request.method == "POST":
+        busca = request.form.get("busqueda")
+        print(buscar)
+       
+        buscar = db.execute('select * from libros where isbn = :buscarr or title = :buscarr or author = :buscarr or year = :buscarr', {'buscarr': busca})
+        print(buscar)
+
+    return render_template("busqueda.html")
+
 @app.route("/libros", methods = ["POST", "GET"])
 def libros():
     if request.method == "POST":
-        buscar = request.form.get("busqueda")
-        print(buscar)
-
+  
         return render_template("libros.html")
 
     else:
         return render_template("libros.html")
-    
+
+
+
 #buscar los campos en la base de datos y asociarlos a la variable buscar
 #hacer consulta select de todos los campos
 #retornar libros, variable = variable
@@ -128,4 +140,4 @@ def cerrar():
 
     session.clear()
 
-    return render_template ("index.html")
+    return render_template ("iniciosecion.html")
