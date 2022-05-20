@@ -136,9 +136,14 @@ def libros():
 
 @app.route("/busqueda/<isbn>", methods = ["POST", "GET"])
 def info(isbn):
-    print(isbn)
-
-    return render_template("book.html")
+    isbn = db.execute('select * from libros where isbn = :informa', {'informa': isbn}).fetchone()
+    if request.method == "POST":
+        isbn = request.form.get("info")
+        print(isbn)
+#hacer consulta insert y renderizar
+        return render_template("book.html")
+  
+    return render_template("book.html", isbn = isbn)
 
 @app.route("/Cerrarsecion")
 def cerrar():
