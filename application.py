@@ -112,11 +112,17 @@ def busqueda():
 
     if request.method == "POST":
         busca = request.form.get("busqueda")
-        print(buscar)
+        print(busca)
        
-        buscar = db.execute('select * from libros where isbn = :buscarr or title = :buscarr or author = :buscarr or year = :buscarr', {'buscarr': busca})
-        print(buscar)
+        buscar = db.execute('select * from libros where isbn like :buscarr or title like :buscarr or author like :buscarr or year like :buscarr', {'buscarr': '%' + busca +'%'}).fetchall()
 
+        for row in buscar:
+            print(row)
+            return render_template("busqueda.html", buscar=buscar)
+        else:
+            flash("No se encontraron coincidencias")
+        return render_template("busqueda.html")
+        
     return render_template("busqueda.html")
 
 @app.route("/libros", methods = ["POST", "GET"])
@@ -128,12 +134,11 @@ def libros():
     else:
         return render_template("libros.html")
 
+@app.route("/busqueda/<isbn>", methods = ["POST", "GET"])
+def info(isbn):
+    print(isbn)
 
-
-#buscar los campos en la base de datos y asociarlos a la variable buscar
-#hacer consulta select de todos los campos
-#retornar libros, variable = variable
-#ciclo for variable
+    return render_template("book.html")
 
 @app.route("/Cerrarsecion")
 def cerrar():

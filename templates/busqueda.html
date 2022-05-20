@@ -6,4 +6,30 @@
 
 {% block body %}
 
+
+
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Isbn</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">year</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for columna  in buscar %}
+            <tr>
+                <td><a href ="/busqueda/{{columna.isbn}}">{{columna.isbn}}</a></td>
+                <td><a href ="https://libros.html">{{columna.title}}</a></td>
+                <td><a href ="https://libros.html">{{columna.author}}</a></td>
+                <td><a href ="https://libros.html">{{columna.year}}</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
 {% endblock %}
