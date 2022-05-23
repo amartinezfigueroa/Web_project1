@@ -10,8 +10,21 @@
        <h3>{{isbn.title}}</h3>
        <h3>{{isbn.author}}</h3>
        <h3>{{isbn.year}}</h3>
-    
-     
+       <br><br>
+       <form action="/busqueda/{{isbn.isbn}}" method="POST">
+        <label for="reseñas">Puntuacion:</label>
+        <select name="puntuacion" id="reseñas">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <p><label for="r">Escribe aqui tu reseña:</label></p>
+        <textarea id="r" name="r" rows="4" cols="50"></textarea>
+        <br><br>
+        <input type="submit" value="Enviar">
+      </form>
 
     </body>
 

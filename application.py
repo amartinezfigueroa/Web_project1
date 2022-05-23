@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
 from helper import login_required
+import datetime
 
 
 load_dotenv()
@@ -125,23 +126,19 @@ def busqueda():
         
     return render_template("busqueda.html")
 
-@app.route("/libros", methods = ["POST", "GET"])
-def libros():
-    if request.method == "POST":
-  
-        return render_template("libros.html")
-
-    else:
-        return render_template("libros.html")
-
 @app.route("/busqueda/<isbn>", methods = ["POST", "GET"])
 def info(isbn):
     isbn = db.execute('select * from libros where isbn = :informa', {'informa': isbn}).fetchone()
     if request.method == "POST":
-        isbn = request.form.get("info")
-        print(isbn)
-#hacer consulta insert y renderizar
-        return render_template("book.html")
+       
+        puntuacion = request.form.get("puntuacion")
+        r = request.form.get("r")
+        print(puntuacion)
+        print(r)
+
+        db.execute('Insert into puntuacion (comentario , fecha_comentario, puntuacion, id_libro_fk, id_usuario_fk) values(:comentario, :fecha_comentario, :puntuacion, :id_libro_fk, :id_usuario_fk)', {'comentario' :r, 'fecha_comentario' : datetime.datetime.now(), 'puntuacion' :puntuacion, 'id_libro_fk' :isbn.id_libros, 'id_usuario_fk' :session["id_user"]})
+        db.commit()
+        return render_template("book.html", isbn = isbn)
   
     return render_template("book.html", isbn = isbn)
 
