@@ -8,6 +8,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from dotenv import load_dotenv
 from helper import login_required
 import datetime
+import requests
 
 
 load_dotenv()
@@ -128,6 +129,7 @@ def busqueda():
 
 @app.route("/busqueda/<isbn>", methods = ["POST", "GET"])
 def info(isbn):
+    print(isbn)
     isbn = db.execute('select * from libros where isbn = :informa', {'informa': isbn}).fetchone()
     if request.method == "POST":
        
@@ -148,3 +150,23 @@ def cerrar():
     session.clear()
 
     return render_template ("iniciosecion.html")
+
+@app.route("/api/<isbn>", methods = ["POST", "GET"])
+def api(isbn):
+    
+    con = db.execute('select isbn,title,author from libros where isbn like :buscarr', {'buscarr':isbn}).fetchall()
+    
+    response = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:"+isbn).json()
+    print(response)
+
+    response = response ["items"][0]
+    averageRating = response ["volumeInfo"]["averageRating"]
+    ratingsCount = response ["volumeInfo"]["ratingsCount"]
+    print(ratingsCount)
+    print(averageRating)
+
+    diccionario = {
+        "prueba" : requests.get("book.html"+isbn).json()
+
+    }
+    return render_template("book.html",  isbn = isbn)
