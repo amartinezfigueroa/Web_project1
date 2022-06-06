@@ -154,19 +154,26 @@ def cerrar():
 @app.route("/api/<isbn>", methods = ["POST", "GET"])
 def api(isbn):
     
-    con = db.execute('select isbn,title,author from libros where isbn like :buscarr', {'buscarr':isbn}).fetchall()
+    con = db.execute('select isbn,title,author,year from libros where isbn like :buscarr', {'buscarr':isbn}).fetchone()
     
+    if con is None:
+        return {"Error": "No hay resultados"}
+
     response = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:"+isbn).json()
     print(response)
 
-    response = response ["items"][0]
-    averageRating = response ["volumeInfo"]["averageRating"]
-    ratingsCount = response ["volumeInfo"]["ratingsCount"]
-    print(ratingsCount)
-    print(averageRating)
+    try:
 
-    diccionario = {
-        "prueba" : requests.get("book.html"+isbn).json()
+        response = response ["items"][0]
+        averageRating = response ["volumeInfo"]["averageRating"]
+        print(averageRating)
+        ratingsCount = response ["volumeInfo"]["ratingsCount"]
+        print(ratingsCount)
+    except:
+        averageRating = 0
+        ratingsCount = 0
 
-    }
-    return render_template("book.html",  isbn = isbn)
+    diccionario = con._asdict()
+    diccionario["review_count"] = ratingsCount
+    diccionario["average_score"] = averageRating
+    return diccionario
